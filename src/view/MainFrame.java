@@ -1,6 +1,8 @@
 package view;
 
+import controller.ClinicianController;
 import controller.PatientController;
+import data.ClinicianFileRepository;
 import data.PatientFileRepository;
 
 import javax.swing.*;
@@ -17,13 +19,20 @@ public class MainFrame extends JFrame {
         JTabbedPane tabs = new JTabbedPane();
 
         PatientsPanel patientsPanel = new PatientsPanel();
+        CliniciansPanel cliniciansPanel = new CliniciansPanel();
+
         tabs.addTab("Patients", patientsPanel);
+        tabs.addTab("Clinicians", cliniciansPanel);
 
         add(tabs, BorderLayout.CENTER);
 
-        PatientFileRepository repo = new PatientFileRepository("datafiles/patients.csv");
-        PatientController controller = new PatientController(repo);
-        patientsPanel.showPatients(controller.getAllPatients());
+        PatientFileRepository patientRepo = new PatientFileRepository("datafiles/patients.csv");
+        PatientController patientController = new PatientController(patientRepo);
+        patientsPanel.showPatients(patientController.getAllPatients());
+
+        ClinicianFileRepository clinicianRepo = new ClinicianFileRepository("datafiles/clinicians.csv");
+        ClinicianController clinicianController = new ClinicianController(clinicianRepo);
+        cliniciansPanel.showClinicians(clinicianController.getAllClinicians());
 
         setVisible(true);
     }
