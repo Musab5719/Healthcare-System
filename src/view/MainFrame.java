@@ -1,8 +1,10 @@
 package view;
 
 import controller.ClinicianController;
+import controller.FacilityController;
 import controller.PatientController;
 import data.ClinicianFileRepository;
+import data.FacilityFileRepository;
 import data.PatientFileRepository;
 
 import javax.swing.*;
@@ -20,19 +22,22 @@ public class MainFrame extends JFrame {
 
         PatientsPanel patientsPanel = new PatientsPanel();
         CliniciansPanel cliniciansPanel = new CliniciansPanel();
+        FacilitiesPanel facilitiesPanel = new FacilitiesPanel();
 
         tabs.addTab("Patients", patientsPanel);
         tabs.addTab("Clinicians", cliniciansPanel);
+        tabs.addTab("Facilities", facilitiesPanel);
 
         add(tabs, BorderLayout.CENTER);
 
-        PatientFileRepository patientRepo = new PatientFileRepository("datafiles/patients.csv");
-        PatientController patientController = new PatientController(patientRepo);
+        PatientController patientController = new PatientController(new PatientFileRepository("datafiles/patients.csv"));
         patientsPanel.showPatients(patientController.getAllPatients());
 
-        ClinicianFileRepository clinicianRepo = new ClinicianFileRepository("datafiles/clinicians.csv");
-        ClinicianController clinicianController = new ClinicianController(clinicianRepo);
+        ClinicianController clinicianController = new ClinicianController(new ClinicianFileRepository("datafiles/clinicians.csv"));
         cliniciansPanel.showClinicians(clinicianController.getAllClinicians());
+
+        FacilityController facilityController = new FacilityController(new FacilityFileRepository("datafiles/facilities.csv"));
+        facilitiesPanel.showFacilities(facilityController.getAllFacilities());
 
         setVisible(true);
     }
