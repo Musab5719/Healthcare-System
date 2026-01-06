@@ -1,10 +1,8 @@
 package view;
 
-import controller.AppointmentController;
 import controller.ClinicianController;
 import controller.FacilityController;
 import controller.PatientController;
-import data.AppointmentFileRepository;
 import data.ClinicianFileRepository;
 import data.FacilityFileRepository;
 import data.PatientFileRepository;
@@ -16,7 +14,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("UK Healthcare Management System");
-        setSize(1250, 700);
+        setSize(1200, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -25,12 +23,10 @@ public class MainFrame extends JFrame {
         PatientsPanel patientsPanel = new PatientsPanel();
         CliniciansPanel cliniciansPanel = new CliniciansPanel();
         FacilitiesPanel facilitiesPanel = new FacilitiesPanel();
-        AppointmentsPanel appointmentsPanel = new AppointmentsPanel();
 
         tabs.addTab("Patients", patientsPanel);
         tabs.addTab("Clinicians", cliniciansPanel);
         tabs.addTab("Facilities", facilitiesPanel);
-        tabs.addTab("Appointments", appointmentsPanel);
 
         add(tabs, BorderLayout.CENTER);
 
@@ -42,9 +38,6 @@ public class MainFrame extends JFrame {
 
         FacilityController facilityController = new FacilityController(new FacilityFileRepository("datafiles/facilities.csv"));
         facilitiesPanel.showFacilities(facilityController.getAllFacilities());
-
-        AppointmentController appointmentController = new AppointmentController(new AppointmentFileRepository("datafiles/appointments.csv"));
-        appointmentsPanel.showAppointments(appointmentController.getAllAppointments());
 
         setVisible(true);
     }
