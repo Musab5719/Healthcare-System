@@ -2,6 +2,7 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +20,20 @@ public class CsvUtil {
                     first = false;
                     continue;
                 }
-                String[] parts = line.split(",", -1);
-                rows.add(parts);
+                rows.add(line.split(",", -1));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
         return rows;
+    }
+
+    public static void appendLine(String filePath, String line) {
+        try (FileWriter fw = new FileWriter(filePath, true)) {
+            fw.write("\n" + line);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

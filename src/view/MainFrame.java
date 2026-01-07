@@ -1,11 +1,7 @@
 package view;
 
-import controller.ClinicianController;
-import controller.FacilityController;
-import controller.PatientController;
-import data.ClinicianFileRepository;
-import data.FacilityFileRepository;
-import data.PatientFileRepository;
+import controller.*;
+import data.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +10,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("UK Healthcare Management System");
-        setSize(1200, 650);
+        setSize(1350, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -23,21 +19,27 @@ public class MainFrame extends JFrame {
         PatientsPanel patientsPanel = new PatientsPanel();
         CliniciansPanel cliniciansPanel = new CliniciansPanel();
         FacilitiesPanel facilitiesPanel = new FacilitiesPanel();
+        AppointmentsPanel appointmentsPanel = new AppointmentsPanel();
+        PrescriptionsPanel prescriptionsPanel = new PrescriptionsPanel();
+
+        ReferralController referralController =
+                new ReferralController(new ReferralFileRepository("datafiles/referrals.csv"), "datafiles/referrals.csv");
+        ReferralsPanel referralsPanel = new ReferralsPanel(referralController);
 
         tabs.addTab("Patients", patientsPanel);
         tabs.addTab("Clinicians", cliniciansPanel);
         tabs.addTab("Facilities", facilitiesPanel);
+        tabs.addTab("Appointments", appointmentsPanel);
+        tabs.addTab("Prescriptions", prescriptionsPanel);
+        tabs.addTab("Referrals", referralsPanel);
 
         add(tabs, BorderLayout.CENTER);
 
-        PatientController patientController = new PatientController(new PatientFileRepository("datafiles/patients.csv"));
-        patientsPanel.showPatients(patientController.getAllPatients());
-
-        ClinicianController clinicianController = new ClinicianController(new ClinicianFileRepository("datafiles/clinicians.csv"));
-        cliniciansPanel.showClinicians(clinicianController.getAllClinicians());
-
-        FacilityController facilityController = new FacilityController(new FacilityFileRepository("datafiles/facilities.csv"));
-        facilitiesPanel.showFacilities(facilityController.getAllFacilities());
+        patientsPanel.showPatients(new PatientController(new PatientFileRepository("datafiles/patients.csv")).getAllPatients());
+        cliniciansPanel.showClinicians(new ClinicianController(new ClinicianFileRepository("datafiles/clinicians.csv")).getAllClinicians());
+        facilitiesPanel.showFacilities(new FacilityController(new FacilityFileRepository("datafiles/facilities.csv")).getAllFacilities());
+        appointmentsPanel.showAppointments(new AppointmentController(new AppointmentFileRepository("datafiles/appointments.csv")).getAllAppointments());
+        prescriptionsPanel.showPrescriptions(new PrescriptionController(new PrescriptionFileRepository("datafiles/prescriptions.csv")).getAllPrescriptions());
 
         setVisible(true);
     }
