@@ -8,39 +8,76 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
 
+    private JLabel statusLabel;
+
     public MainFrame() {
         setTitle("UK Healthcare Management System");
-        setSize(1350, 750);
+        setSize(1400, 780);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        statusLabel = new JLabel("Ready");
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
+
+        JLabel header = new JLabel(" UK Healthcare Management System");
+        header.setFont(header.getFont().deriveFont(Font.BOLD, 18f));
+        header.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
+
         JTabbedPane tabs = new JTabbedPane();
 
-        PatientsPanel patientsPanel = new PatientsPanel();
+        PatientController patientController =
+                new PatientController(new PatientFileRepository("datafiles/patients.csv"));
+        PatientsPanel patientsPanel = new PatientsPanel(patientController, this::setStatus);
+
         CliniciansPanel cliniciansPanel = new CliniciansPanel();
-        FacilitiesPanel facilitiesPanel = new FacilitiesPanel();
+        cliniciansPanel.showClinicians(
+                new ClinicianController(new ClinicianFileRepository("datafiles/clinicians.csv"))
+                        .getAllClinicians()
+        );
+
         AppointmentsPanel appointmentsPanel = new AppointmentsPanel();
-        PrescriptionsPanel prescriptionsPanel = new PrescriptionsPanel();
+        appointmentsPanel.showAppointments(
+                new AppointmentController(new AppointmentFileRepository("datafiles/appointments.csv"))
+                        .getAllAppointments()
+        );
+
+        PrescriptionController prescriptionController =
+                new PrescriptionController(
+                        new PrescriptionFileRepository("datafiles/prescriptions.csv"),
+                        "datafiles/prescriptions.csv"
+                );
+        PrescriptionsPanel prescriptionsPanel =
+                new PrescriptionsPanel(prescriptionController, this::setStatus);
 
         ReferralController referralController =
-                new ReferralController(new ReferralFileRepository("datafiles/referrals.csv"), "datafiles/referrals.csv");
-        ReferralsPanel referralsPanel = new ReferralsPanel(referralController);
+                new ReferralController(
+                        new ReferralFileRepository("datafiles/referrals.csv"),
+                        "datafiles/referrals.csv"
+                );
+        ReferralsPanel referralsPanel =
+                new ReferralsPanel(referralController, this::setStatus);
 
         tabs.addTab("Patients", patientsPanel);
         tabs.addTab("Clinicians", cliniciansPanel);
-        tabs.addTab("Facilities", facilitiesPanel);
         tabs.addTab("Appointments", appointmentsPanel);
         tabs.addTab("Prescriptions", prescriptionsPanel);
         tabs.addTab("Referrals", referralsPanel);
 
-        add(tabs, BorderLayout.CENTER);
+        JPanel top = new JPanel(new BorderLayout());
+        top.add(header, BorderLayout.CENTER);
 
-        patientsPanel.showPatients(new PatientController(new PatientFileRepository("datafiles/patients.csv")).getAllPatients());
-        cliniciansPanel.showClinicians(new ClinicianController(new ClinicianFileRepository("datafiles/clinicians.csv")).getAllClinicians());
-        facilitiesPanel.showFacilities(new FacilityController(new FacilityFileRepository("datafiles/facilities.csv")).getAllFacilities());
-        appointmentsPanel.showAppointments(new AppointmentController(new AppointmentFileRepository("datafiles/appointments.csv")).getAllAppointments());
-        prescriptionsPanel.showPrescriptions(new PrescriptionController(new PrescriptionFileRepository("datafiles/prescriptions.csv")).getAllPrescriptions());
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.add(statusLabel, BorderLayout.CENTER);
+
+        setLayout(new BorderLayout());
+        add(top, BorderLayout.NORTH);
+        add(tabs, BorderLayout.CENTER);
+        add(bottom, BorderLayout.SOUTH);
 
         setVisible(true);
+    }
+
+    private void setStatus(String text) {
+        statusLabel.setText(text == null ? "" : text);
     }
 }

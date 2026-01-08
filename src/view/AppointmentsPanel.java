@@ -10,6 +10,7 @@ import java.util.List;
 public class AppointmentsPanel extends JPanel {
 
     private DefaultTableModel model;
+    private JTable table;
 
     public AppointmentsPanel() {
         setLayout(new BorderLayout());
@@ -19,7 +20,19 @@ public class AppointmentsPanel extends JPanel {
                 0
         );
 
-        JTable table = new JTable(model);
+        table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setFillsViewportHeight(true);
+
+        JTextField searchField = new JTextField(22);
+        TableSearchUtil.attach(table, searchField);
+
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        top.add(new JLabel("Search:"));
+        top.add(searchField);
+
+        add(top, BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 

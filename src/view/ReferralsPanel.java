@@ -7,14 +7,18 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ReferralsPanel extends JPanel {
 
     private DefaultTableModel model;
+    private JTable table;
     private ReferralController controller;
+    private Consumer<String> status;
 
-    public ReferralsPanel(ReferralController controller) {
+    public ReferralsPanel(ReferralController controller, Consumer<String> status) {
         this.controller = controller;
+        this.status = status;
 
         setLayout(new BorderLayout());
 
@@ -23,7 +27,10 @@ public class ReferralsPanel extends JPanel {
                 0
         );
 
-        JTable table = new JTable(model);
+        table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setFillsViewportHeight(true);
 
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton createBtn = new JButton("Create Referral");
@@ -33,6 +40,7 @@ public class ReferralsPanel extends JPanel {
             CreateReferralDialog dialog = new CreateReferralDialog(controller);
             dialog.setVisible(true);
             refresh();
+            status.accept("Referral created (Singleton) and saved to outputs");
         });
 
         add(top, BorderLayout.NORTH);

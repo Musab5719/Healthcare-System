@@ -1,6 +1,7 @@
 package data;
 
 import model.Patient;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +37,37 @@ public class PatientFileRepository {
         }
 
         return patients;
+    }
+
+    public void saveAll(List<Patient> patients) {
+        String header = CsvUtil.readHeader(filePath);
+        List<String> lines = new ArrayList<>();
+
+        for (Patient p : patients) {
+            String line = String.join(",",
+                    p.getPatientId(),
+                    safe(p.getFirstName()),
+                    safe(p.getLastName()),
+                    safe(p.getDateOfBirth()),
+                    safe(p.getNhsNumber()),
+                    safe(p.getGender()),
+                    safe(p.getPhoneNumber()),
+                    safe(p.getEmail()),
+                    safe(p.getAddress()),
+                    safe(p.getPostcode()),
+                    safe(p.getEmergencyContactName()),
+                    safe(p.getEmergencyContactPhone()),
+                    safe(p.getRegistrationDate()),
+                    safe(p.getGpSurgeryId())
+            );
+            lines.add(line);
+        }
+
+        CsvUtil.writeAll(filePath, header, lines);
+    }
+
+    private String safe(String s) {
+        if (s == null) return "";
+        return s.replace(",", " ");
     }
 }

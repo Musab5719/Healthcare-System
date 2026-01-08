@@ -36,4 +36,23 @@ public class CsvUtil {
             System.out.println(e.getMessage());
         }
     }
+
+    public static String readHeader(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            return br.readLine();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static void writeAll(String filePath, String header, List<String> lines) {
+        try (FileWriter fw = new FileWriter(filePath, false)) {
+            fw.write(header == null ? "" : header);
+            for (String line : lines) {
+                fw.write("\n" + line);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
